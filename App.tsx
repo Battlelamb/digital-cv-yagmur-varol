@@ -23,7 +23,7 @@ const cvData: CvData = {
     {
       company: 'DESTEK BANK',
       period: 'Ekim 2025 - Devam',
-      title: 'Risk Yönetimi Uzmanı',
+      title: 'Risk Yönetimi Uzman Yardımcısı',
       responsibilities: [
         'Bankanın maruz kaldığı kredi, piyasa, likidite, operasyonel ve faiz oranı risklerini tanımlamak, ölçmek, izlemek ve raporlamak',
         'Risk politikaları, limitler ve prosedürlerin hazırlanmasına katkı sağlamak',
