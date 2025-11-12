@@ -230,25 +230,46 @@ const App: React.FC = () => {
         }
       });
 
-      // Capture EXACTLY what's rendered - let html2canvas auto-detect dimensions
-      // Don't force width/height - let it capture naturally
+      // Capture EXACTLY what's rendered - match webpage layout precisely
       const canvas = await html2canvas(element, {
-        scale: 2, // Good balance - 2x for quality without memory issues
+        scale: 2, // 2x resolution for quality
         useCORS: true,
-        logging: false, // Disable logging for cleaner output
+        logging: false,
         backgroundColor: '#ffffff',
         allowTaint: false,
-        // Remove width/height to let html2canvas auto-detect from rendered element
-        // This ensures it captures exactly what's visible
         removeContainer: false,
-        imageTimeout: 15000, // Longer timeout for images
-        onclone: (clonedDoc: Document, element: HTMLElement) => {
-          // Ensure cloned element has same styles
-          const clonedElement = clonedDoc.querySelector('[data-cv-content]') || element;
-          if (clonedElement) {
-            // Force visibility
-            (clonedElement as HTMLElement).style.visibility = 'visible';
-            (clonedElement as HTMLElement).style.display = 'block';
+        imageTimeout: 15000,
+        // Capture exact rendered dimensions
+        width: element.offsetWidth || element.scrollWidth,
+        height: element.offsetHeight || element.scrollHeight,
+        x: 0,
+        y: 0,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.offsetWidth || element.scrollWidth,
+        windowHeight: element.offsetHeight || element.scrollHeight,
+        onclone: (clonedDoc: Document, clonedElement: HTMLElement) => {
+          // Ensure all styles are preserved in cloned document
+          const clonedMain = clonedDoc.querySelector('[data-cv-content]') || clonedElement;
+          if (clonedMain) {
+            // Preserve exact layout styles
+            (clonedMain as HTMLElement).style.visibility = 'visible';
+            (clonedMain as HTMLElement).style.display = 'grid';
+            (clonedMain as HTMLElement).style.width = `${element.offsetWidth}px`;
+            (clonedMain as HTMLElement).style.height = 'auto';
+            (clonedMain as HTMLElement).style.maxWidth = 'none';
+            (clonedMain as HTMLElement).style.margin = '0';
+            
+            // Ensure grid layout is preserved
+            const computedStyle = window.getComputedStyle(element);
+            (clonedMain as HTMLElement).style.gridTemplateColumns = computedStyle.gridTemplateColumns;
+            (clonedMain as HTMLElement).style.gap = computedStyle.gap;
+            
+            // Hide download button in clone
+            const clonedButton = clonedDoc.querySelector('.no-print') as HTMLElement;
+            if (clonedButton) {
+              clonedButton.style.display = 'none';
+            }
           }
         }
       });
@@ -303,11 +324,18 @@ const App: React.FC = () => {
       const scaledHeight = imgHeightMm * widthRatio;
       
       console.log('Scaling calculation:', {
+        elementDimensions: {
+          offsetWidth: element.offsetWidth,
+          offsetHeight: element.offsetHeight,
+          scrollWidth: element.scrollWidth,
+          scrollHeight: element.scrollHeight
+        },
         canvasPixels: { width: imgWidth, height: imgHeight },
         cssPixels: { width: cssWidth, height: cssHeight },
         mm: { width: imgWidthMm, height: imgHeightMm },
         scaled: { width: scaledWidth, height: scaledHeight },
-        ratio: widthRatio
+        ratio: widthRatio,
+        aspectRatio: cssWidth / cssHeight
       });
       
       // Create PDF
@@ -317,7 +345,7 @@ const App: React.FC = () => {
         format: 'a4'
       });
 
-      // Handle multi-page
+      // Handle multi-page - maintain exact layout proportions
       const pageHeight = CONTENT_HEIGHT;
       const totalPages = Math.max(1, Math.ceil(scaledHeight / pageHeight));
       
@@ -326,15 +354,29 @@ const App: React.FC = () => {
         imgHeightMm,
         scaledWidth,
         scaledHeight,
-        totalPages
+        totalPages,
+        pageHeight: CONTENT_HEIGHT,
+        aspectRatioPreserved: (scaledWidth / scaledHeight).toFixed(4)
       });
       
+      // Add image to PDF maintaining exact proportions
       for (let i = 0; i < totalPages; i++) {
         if (i > 0) {
           pdf.addPage();
         }
+        // Calculate y position to show correct portion of content
         const yPosition = MARGIN - (i * pageHeight);
-        pdf.addImage(imgData, 'PNG', MARGIN, yPosition, scaledWidth, scaledHeight);
+        // Use exact scaled dimensions to preserve layout
+        pdf.addImage(
+          imgData, 
+          'PNG', 
+          MARGIN, 
+          yPosition, 
+          scaledWidth, 
+          scaledHeight,
+          undefined,
+          'FAST' // Use FAST for better compatibility
+        );
       }
 
       pdf.save('Yagmur_Varol_CV.pdf');
