@@ -14,7 +14,7 @@ declare global {
 const cvData: CvData = {
   name: 'Yağmur Varol',
   title: 'Risk Yönetimi Uzmanı',
-  photoUrl: '/profile-1.png',
+  photoUrl: '/profile-2.png',
   contact: {
     phone: '+90 506 068 29 69',
     email: 'yagmurrvaroll@gmail.com',
@@ -22,7 +22,7 @@ const cvData: CvData = {
   experience: [
     {
       company: 'DESTEK BANK',
-      period: 'Ekim 2024 - Devam',
+      period: 'Ekim 2025 - Devam',
       title: 'Risk Yönetimi Uzmanı',
       responsibilities: [
         'Bireysel ve Ticari kredi müşteri analizi; Finansal yapı ve uygulanabilirlik testlerinin sağlanması',
@@ -40,7 +40,7 @@ const cvData: CvData = {
     },
     {
       company: 'PARAM',
-      period: 'Haziran 2024 - Ekim 2024',
+      period: 'Haziran 2024 - Ekim 2025',
       title: 'Risk Yönetimi Uzman Yardımcısı',
       responsibilities: [
         'Bireysel ve Ticari kredi müşteri analizi; Finansal yapı ve uygulanabilirlik testlerinin sağlanması',
@@ -407,12 +407,14 @@ const App: React.FC = () => {
         
         {/* Left Column (Sidebar) */}
         <aside className="md:col-span-1 bg-gray-50 p-8 border-r border-gray-200">
-          <div className="flex justify-center mb-8">
-            <img 
-              src={cvData.photoUrl}
-              alt={cvData.name}
-              className="rounded-full w-40 h-40 object-cover border-4 border-white shadow-md"
-            />
+          <div className="flex justify-center mb-8 pt-0">
+            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
+              <img 
+                src={cvData.photoUrl}
+                alt={cvData.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
 
           <Section title="İLETİŞİM">
