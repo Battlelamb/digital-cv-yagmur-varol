@@ -45,7 +45,7 @@ const cvData: CvData = {
     {
       company: 'PARAM',
       period: 'Haziran 2024 - Ekim 2025',
-      title: 'Risk Yönetimi Uzman Yardımcısı',
+      title: 'Risk Yönetimi Uzman',
       responsibilities: [
         'Bireysel ve Ticari kredi müşteri analizi; Finansal yapı ve uygulanabilirlik testlerinin sağlanması',
         'B2C B2B kredi kanallarına istinaden müşteri ediniminde skorkart yapılandırmasına destek olmak ve takip etmek,',
