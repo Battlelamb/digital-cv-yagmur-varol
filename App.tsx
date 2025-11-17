@@ -14,7 +14,7 @@ declare global {
 const cvData: CvData = {
   name: 'Yağmur Varol',
   title: 'Risk Yönetimi Uzmanı',
-  photoUrl: '/profile-2.png',
+  photoUrl: '/profile2.png',
   contact: {
     phone: '+90 506 068 29 69',
     email: 'yagmurrvaroll@gmail.com',
